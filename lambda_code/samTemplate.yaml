@@ -33,7 +33,7 @@ Resources:
       Variables:
               #urlpgrest: !Sub '{{resolve:ssm:/${Portfolio}/${ApplicationEnvironmentTag}/NlbURL:1}}'
         credentials: 'dummy' 
-        memberregistration: ''
+        memberregistration: 'memberregistration'
         ngdi: 'dummy' 
         notification: 'dummy' 
         notificationReport: 'dummy' 
