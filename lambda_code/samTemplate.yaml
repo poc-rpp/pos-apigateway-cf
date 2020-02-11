@@ -37,7 +37,8 @@ Resources:
         ngdi: 'dummy' 
         notification: 'dummy' 
         notificationReport: 'dummy' 
-
+        servicesEstimate: 'servicesEstimae'
+        registration: 'registration'
     ApiDeployment:
      Type: AWS::ApiGateway::Deployment
      DependsOn: AlertsApi
