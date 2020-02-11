@@ -39,6 +39,7 @@ Resources:
         notificationReport: 'dummy' 
         servicesEstimate: 'servicesEstimae'
         registration: 'registration'
+        login: 'login'
     ApiDeployment:
      Type: AWS::ApiGateway::Deployment
      DependsOn: AlertsApi
@@ -71,6 +72,94 @@ Resources:
               type: ApiSecond
               description: Title of the listing.
         paths:
+              /memb/login:
+                post:
+                  consumes:
+                  - "application/json"
+                  parameters:
+                  - name: "Prefer"
+                    in: "header"
+                    required: true
+                    type: "string"
+                  - name: "token"
+                    in: "header"
+                    required: true
+                    type: "string"
+                  responses:
+                    '200':
+                      description: "200 response"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                    '400':
+                      description: "400 response"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  security:
+                  - sigv4: []
+                  x-amazon-apigateway-request-validator: "Validate query string parameters and\
+                    \ headers"
+                  x-amazon-apigateway-integration:
+                    uri: !Sub
+                        - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${Stagevariable}/invocations"
+                        - Stagevariable: "${stageVariables.login}"
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'*'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Amz-Security-Token,Prefer'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                      '.*"status": 400.*':
+                        statusCode: "400"
+                    requestParameters:
+                      integration.request.header.Prefer: "method.request.header.Prefer"
+                      integration.request.header.token: "method.request.header.token"
+                    requestTemplates:
+                      application/json: "{\r\n\"customerId\":$input.json('$.customerId'),\r\n\"\
+                        partnerName\":$input.json('$.partnerName'),\r\n\"groupId\":$input.json('$.groupId'),\r\
+                        \n\"subGroupId\":$input.json('$.subGroupId'),\r\n\"marketType\":$input.json('$.marketType'),\r\
+                        \n\"responseTimeFrame\":$input.json('$.responseTimeFrame'),\r\n#set($header3Value=\"\
+                        $util.escapeJavaScript($input.params('token'))\")\r\n\"token\":\"$header3Value\"\
+                        \r\n}"
+                    passthroughBehavior: "when_no_templates"
+                    httpMethod: "POST"
+                    contentHandling: "CONVERT_TO_TEXT"
+                    type: "aws"
+                options:
+                  consumes:
+                  - "application/json"
+                  responses:
+                    '200':
+                      description: "200 response"
+                      headers:
+                        Access-Control-Allow-Origin:
+                          type: "string"
+                        Access-Control-Allow-Methods:
+                          type: "string"
+                        Access-Control-Allow-Headers:
+                          type: "string"
+                  x-amazon-apigateway-integration:
+                    responses:
+                      default:
+                        statusCode: "200"
+                        responseParameters:
+                          method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS,GET'"
+                          method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,Prefer,token'"
+                          method.response.header.Access-Control-Allow-Origin: "'*'"
+                    requestTemplates:
+                      application/json: "{\"statusCode\": 200}"
+                    passthroughBehavior: "when_no_match"
+                    type: "aws"
               /memb/registration:
                 post:
                   consumes:
