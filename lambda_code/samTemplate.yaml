@@ -159,7 +159,7 @@ Resources:
                     requestTemplates:
                       application/json: "{\"statusCode\": 200}"
                     passthroughBehavior: "when_no_match"
-                    type: "aws"
+                    type: "mock"
               /memb/registration:
                 post:
                   consumes:
